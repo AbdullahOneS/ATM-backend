@@ -15,35 +15,35 @@ const handleVerification = (req, res) => {
 
 
 
-  const sql = `Select status, exp_date from card where card_number=?;`;
+  const sql = `Select status, expiry_date from card where card_no=?;`;
   pool.query(sql, [cardNumber], (err, result, fields) => {
     if (err) throw err;
     if (!result.length) {
       res.json({
-        status: 401,
+        status: 400,
         message: "Invalid Card Number",
       });
-    } else if (isNotExpired(result[0]["exp_date"])) {   //Check if Card did not exceed the expiry date
-        if (result[0]["status"] == "Active") {    // Card is active User can perform trnasactions
+    } else if (isNotExpired(result[0]["expiry_date"]+"")) {   //Check if Card did not exceed the expiry date
+        if (result[0]["status"] == "active") {    // Card is active User can perform trnasactions
             res.json({
                 status: 200,
                 message: "Card is Active",
             });
             
-        } else if (result[0]["status"] == "Inactive"){   // Card is Inactive, Exceeded 3 attmepts
+        } else if (result[0]["status"] == "inactive"){   // Card is Inactive, Exceeded 3 attmepts
             res.json({
-                status: 200,
+                status: 401,
                 message: "You exceeded 3 PIN attempts, Please retry after 24 hours ", 
             });
         } else {        // Card(Status) is blocked i.e. Card is reported as stolen
             res.json({
-                status: 200,
+                status: 401,
                 message: "Your Card is blocked. Please contact bank", 
             });
         }
     } else {
         res.json({
-            status: 200,
+            status: 402,
             message: "Card has been expired",
            
         });
@@ -65,6 +65,8 @@ function handleAuthentication (req, res, next) {
 
   const sql = `Select pin from card where card_no=?;`;
   pool.query(sql, [cardNumber], (err, result, fields) => {
+    console.log(result[0]["pin"] + " =====> " + pin);
+
     if (err) throw err;
     if (!result.length) {
       return res.json({
@@ -87,4 +89,7 @@ function handleAuthentication (req, res, next) {
   });
 };
 
-module.exports = { handleAuthentication, handleVerification };
+module.exports = { 
+  handleAuthentication, 
+  handleVerification 
+};

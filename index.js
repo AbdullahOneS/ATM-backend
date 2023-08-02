@@ -1,8 +1,9 @@
 const dotenv = require('dotenv').config()      
 const cors = require('cors')
 const express = require('express')
-const authenticate = require('./routes/authenticate') 
+const routes = require('./routes/index') 
 const bodyParser = require("body-parser")
+const bcrypt = require('bcrypt')
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,8 +27,5 @@ app.get('/',async (req, res) => {
     res.send("Hello")
 })
 
-// app.post('/',async (req, res) => {
-//     res.send("Hello");
-// } )
 
-app.use('/api/authenticate', authenticate)
+app.use('/', routes)
