@@ -13,10 +13,21 @@ app.listen(PORT, () => {
 
 //Restrict this later
 app.use(cors({ origin: "*" }));
-app.use(bodyParser.json())
+app.use(express.static(__dirname + '/public'));
+
+app.use(bodyParser.urlencoded({
+   extended: false
+}));
+
+app.use(bodyParser.json());
+
 //for test
 app.get('/',async (req, res) => {
     res.send("Hello")
 })
 
-app.use('/api/login', authenticate)
+// app.post('/',async (req, res) => {
+//     res.send("Hello");
+// } )
+
+app.use('/api/authenticate', authenticate)
