@@ -1,9 +1,13 @@
 const { pool } = require("../config/db");
 const { addLog } = require("../helper/log");
-const checkBalance = (req, res) => {
+
+
+
+const printStatement = (req, res) => {
 
     const { cardNumber} = req.body;
-
+    
+    // query to be modified
     const sql = `select balance,card_no,account.account_no,customer.name
     from card 
     left join account on card.account_no = account.account_no
@@ -19,8 +23,7 @@ const checkBalance = (req, res) => {
           });
         }else{
             var now = new Date().toISOString();
-
-            addLog(cardNumber,now.slice(0, 10),now.slice(11, 19),"Fetched Query Balance Successfully");
+            addLog(cardNumber,now.slice(0, 10),now.slice(11, 19),"Printed Statement Sucessfully");
             res.json({
                 status: 200,
                 data: {
@@ -35,5 +38,5 @@ const checkBalance = (req, res) => {
 }
 
 module.exports = { 
-    checkBalance,  
+    printStatement,  
 };
