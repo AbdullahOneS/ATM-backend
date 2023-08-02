@@ -5,4 +5,4 @@ const { handleAuthentication } = require("../controllers/authenticate")
 //Authenticate
 router.post("/", handleAuthentication);
 
-module.exports =  router ;
+module.exports =  router;

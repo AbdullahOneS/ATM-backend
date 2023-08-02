@@ -1,6 +1,6 @@
 const { pool } = require("../config/db");
 const { match } = require("../helper/encrypt.js");
-const isNotExpired = require('../helper/expiry_utils');
+const isNotExpired = require('./expiryUtils');
 
 /*  
     Input: Card number
@@ -12,8 +12,6 @@ const isNotExpired = require('../helper/expiry_utils');
 const handleVerification = (req, res) => {
   console.log("hiii");
   const { cardNumber } = req.body;
-
-
 
   const sql = `Select status, exp_date from card where card_number=?;`;
   pool.query(sql, [cardNumber], (err, result, fields) => {
@@ -59,27 +57,26 @@ const handleVerification = (req, res) => {
                 verification so no need to check status and all )
     Output: Appropriate message
 */
-function handleAuthentication (req, res, next) {
+const handleAuthentication = (req, res) => {
   console.log("hiii");
   const { cardNumber, pin } = req.body;
 
-  const sql = `Select pin from card where card_no=?;`;
+  const sql = `Select pin from card where card_number=?;`;
   pool.query(sql, [cardNumber], (err, result, fields) => {
     if (err) throw err;
     if (!result.length) {
-      return res.json({
+      res.json({
         status: 401,
         message: "Invalid Card Number",
       });
-      
     } else if (match(pin, result[0]["pin"])) {
         res.json({
             status: 200,
             message: "Authentication Successful",
+            
         }); 
-        next()
     } else {
-      return res.json({
+      res.json({
         status: 401,
         message: "Invalid PIN",
       });
