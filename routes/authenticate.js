@@ -3,6 +3,6 @@ const router = express.Router();
 const { handleAuthentication } = require("../controllers/authenticate")
 
 //Authenticate
-router.post("/", handleAuthentication);
+router.post("/authenticate", handleAuthentication);
 
 module.exports =  router ;
