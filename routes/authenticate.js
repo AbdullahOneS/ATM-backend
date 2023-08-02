@@ -1,8 +1,8 @@
-import { Router } from "express";
-const router = Router();
-import { handleAuthenticate } from '../controllers/authenticate';
+const express = require("express")
+const router = express.Router();
+const { handleAuthentication } = require("../controllers/authenticate")
 
 //Authenticate
-router.post("/", handleAuthenticate);
+router.post("/", handleAuthentication);
 
-export default router;
+module.exports =  router ;

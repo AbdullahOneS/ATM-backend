@@ -1,11 +1,11 @@
-import { hashSync, compareSync } from 'bcrypt';
+const bcrypt = require('bcrypt')
 
 const saltRounds = 10;
 
-export function encrypt(pin){
-    return hashSync(pin, saltRounds);
+exports.encrypt = (pin) => {
+    return bcrypt.hashSync(pin, saltRounds);
 }
 
-export function match(pin, hash){
-    return compareSync(pin, hash);
+exports.match = (pin, hash) => {
+    return bcrypt.compareSync(pin, hash);
 }
