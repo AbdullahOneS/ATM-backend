@@ -10,7 +10,7 @@ const isNotExpired = require('../helper/expiry_utils');
     Output: Appropriate status code and message
 */
 const handleVerification = (req, res) => {
-  console.log("hiii");
+
   const { cardNumber } = req.body;
 
 
