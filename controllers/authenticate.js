@@ -18,6 +18,8 @@ const handleVerification = (req, res) => {
   pool.query(sql, [card_no], (err, result, fields) => {
     if (err) throw err;
     if (!result.length) {
+      addLog(card_no,"Card Verification Failed");
+
       res.json({
         status: 400,
         message: "Invalid Card Number",
@@ -27,7 +29,7 @@ const handleVerification = (req, res) => {
           //to add the logs
           var now = new Date().toISOString();
 
-          addLog(card_no,now.slice(0, 10),now.slice(11, 19),"Card Verified successfully");
+          addLog(card_no,"Card Verified successfully");
           
           res.json({
                 status: 200,
@@ -36,17 +38,20 @@ const handleVerification = (req, res) => {
             
         } else if (result[0]["status"] == "inactive"){   // Card is Inactive, Exceeded 3 attmepts
 
+          addLog(card_no,"Card Verification Failed");
             res.json({
                 status: 401,
                 message: "You exceeded 3 PIN attempts, Please retry after 24 hours ", 
             });
         } else {        // Card(Status) is blocked i.e. Card is reported as stolen
+            addLog(card_no,"Card Verification Failed");
             res.json({
                 status: 401,
                 message: "Your Card is blocked. Please contact bank", 
             });
         }
     } else {
+      addLog(card_no,"Card Verification Failed");
         res.json({
             status: 402,
             message: "Card has been expired",
@@ -74,18 +79,21 @@ function handleAuthentication (req, res, next) {
 
     if (err) throw err;
     if (!result.length) {
+      addLog(card_no,"Card Authentication Failed");
       return res.json({
         status: 401,
         message: "Invalid Card Number",
       });
       
     } else if (match(pin, result[0]["pin"])) {
+      addLog(card_no,"Card Authentication Successfull");
         res.json({
             status: 200,
             message: "Authentication Successful",
         }); 
         next()
     } else {
+      addLog(card_no,"Card Authentication Failed");
       return res.json({
         status: 401,
         message: "Invalid PIN",
