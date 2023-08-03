@@ -27,5 +27,4 @@ app.get('/',async (req, res) => {
     res.send("Hello")
 })
 
-
 app.use('/', routes)
