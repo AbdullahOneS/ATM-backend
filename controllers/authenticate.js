@@ -1,7 +1,7 @@
 const { pool } = require("../config/db");
 const { match } = require("../helper/encrypt.js");
 const isNotExpired = require('../helper/expiry_utils');
-
+const { addLog } = require("../helper/log");
 /*  
     Input: Card number
     function: Checks if card exists 
@@ -10,9 +10,8 @@ const isNotExpired = require('../helper/expiry_utils');
     Output: Appropriate status code and message
 */
 const handleVerification = (req, res) => {
-  console.log("hiii");
-  const { cardNumber } = req.body;
 
+  const { cardNumber } = req.body;
 
 
   const sql = `Select status, expiry_date from card where card_no=?;`;
@@ -25,12 +24,18 @@ const handleVerification = (req, res) => {
       });
     } else if (isNotExpired(result[0]["expiry_date"]+"")) {   //Check if Card did not exceed the expiry date
         if (result[0]["status"] == "active") {    // Card is active User can perform trnasactions
-            res.json({
+          //to add the logs
+          var now = new Date().toISOString();
+
+          addLog(cardNumber,now.slice(0, 10),now.slice(11, 19),"Card Verified successfully");
+          
+          res.json({
                 status: 200,
                 message: "Card is Active",
             });
             
         } else if (result[0]["status"] == "inactive"){   // Card is Inactive, Exceeded 3 attmepts
+
             res.json({
                 status: 401,
                 message: "You exceeded 3 PIN attempts, Please retry after 24 hours ", 

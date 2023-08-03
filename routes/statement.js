@@ -2,15 +2,15 @@ const express = require("express")
 const router = express.Router();
 
 const { 
-    checkBalance,  
-    } = require("../controllers/checkBalance")
+    printStatement,  
+    } = require("../controllers/printStatement")
 
 const { 
     handleAuthentication,  
     } = require("../middleware/authenticate")
 
 //request balance 
-router.post("/check",handleAuthentication ,checkBalance);
+router.post("/print",handleAuthentication ,printStatement);
 
 // //Verification
 // router.post("/verify", handleVerification);
