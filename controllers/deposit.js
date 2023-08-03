@@ -1,15 +1,15 @@
 const { pool } = require("../config/db");
 const { addLog } = require("../helper/log");
 
-const addDeposit = (req,res)=>{
-
-    const { card_no, amount,atm_id, transaction_type } = req.body;
+const addDeposit = (req,res,next)=>{
+    const {card_no,amount,atm_id } = req.body;
     const {n_100,n_200,n_500,n_2000} = req.body.denomination;
     const account_no = req.account_no; 
 
     // Perform deposit transaction
     pool.getConnection((err, connection) => {
       if (err) {
+        addLog(card_no,"Deposit Failed");
         console.error("Error connecting to MySQL:", err);
         return res.json({
           status: 500,
@@ -19,6 +19,7 @@ const addDeposit = (req,res)=>{
 
       connection.beginTransaction((err) => {
         if (err) {
+            addLog(card_no,"Deposit Failed");
           connection.release();
           console.error("Error starting transaction:", err);
           return res.json({
@@ -31,13 +32,16 @@ const addDeposit = (req,res)=>{
       const addBalanceSql = `update account set balance = balance + ? where account_no=?;`;
       connection.query(addBalanceSql, [amount,account_no], (err, result) => {
         if (err) {
+            addLog(card_no,"Deposit Failed");
           connection.rollback(() => {
             connection.release();
             console.error("Error updating card balance:", err);
+
             return res.json({
               status: 500,
-              message: "Withdrawal failed. Please try again later.",
+              message: "Deposit failed. Please try again later.",
             });
+
           });
         }
 
@@ -48,33 +52,37 @@ const addDeposit = (req,res)=>{
                               where atm_id = ?; `;
       connection.query(updateAtmSql, [n_100,n_200,n_500,n_2000,atm_id], (err, result, fields) => {
         if (err) {
+            addLog(card_no,"Deposit Failed");
           connection.rollback(() => {
             connection.release();
             console.error("Error updating ATM denominations:", err);
             return res.json({
               status: 500,
-              message: "Withdrawal failed. Please try again later.",
+              message: "Deposit failed. Please try again later.",
             });
           });
         }
 
         connection.commit((err) => {
+        
           if (err) {
+            addLog(card_no,"Deposit Failed");
             connection.rollback(() => {
               connection.release();
               console.error("Error committing transaction:", err);
               return res.json({
                 status: 500,
-                message: "Withdrawal failed. Please try again later.",
+                message: "Deposit failed. Please try again later.",
               });
             });
           }
 
           connection.release();
-          return res.json({
-            status: 200,
-            message: "Withdrawal successful.",
-          });
+          addLog(card_no,`${amount} Amount Deposited Successfully`);
+
+          req.t_status = 'success';
+          req.t_type = 'deposit';
+          next();
         });
       });
     });

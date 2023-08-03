@@ -5,12 +5,12 @@ const {
     addDeposit,  
     } = require("../controllers/deposit")
 
-const { 
-    handleAuthentication,  
-    } = require("../middleware/authenticate")
+const { handleAuthentication } = require("../middleware/authenticate");
+
+const { addTransaction } = require("../controllers/transaction");
 
 //request balance 
-router.post("/add",handleAuthentication ,addDeposit);
+router.post("/add",handleAuthentication ,addDeposit,addTransaction);
 
 // //Verification
 // router.post("/verify", handleVerification);
