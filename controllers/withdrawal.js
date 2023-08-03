@@ -1,87 +1,109 @@
 const { pool } = require("../config/db");
-const { match } = require("../helper/encrypt.js");
-const isNotExpired = require('./expiryUtils');
+const  getBalanceByCardNo  = require("../helper/getBalanceByCardNo");
 
-/*  
-    Input: Card number
-    function: Checks if card exists 
-              Whether card is expired
-              Status of the card
-    Output: Appropriate status code and message
+/* input: withdrawal_amt, denominations ( eg. {n_2000: 5, n_500: 3, n_200: 4, n_100:4}), card_no
+   functions: Check if account balance is sufficient
+              Use transaction to update balance and atm_denominations and rollback if neccessary
+   output: status of transaction
 */
-const handleVerification = (req, res) => {
-  console.log("hiii");
-  const { cardNumber } = req.body;
+function handleWithdrawal(req, res) {
+  console.log(req.body);
+  const { withdrawal_amt, denominations, card_no, atm_id } = req.body;
 
-  const sql = `Select status, exp_date from card where card_number=?;`;
-  pool.query(sql, [cardNumber], (err, result, fields) => {
-    if (err) throw err;
-    if (!result.length) {
-      res.json({
-        status: 401,
-        message: "Invalid Card Number",
-      });
-    } else if (isNotExpired(result[0]["exp_date"])) {   //Check if Card did not exceed the expiry date
-        if (result[0]["status"] == "Active") {    // Card is active User can perform trnasactions
-            res.json({
-                status: 200,
-                message: "Card is Active",
-            });
-            
-        } else if (result[0]["status"] == "Inactive"){   // Card is Inactive, Exceeded 3 attmepts
-            res.json({
-                status: 200,
-                message: "You exceeded 3 PIN attempts, Please retry after 24 hours ", 
-            });
-        } else {        // Card(Status) is blocked i.e. Card is reported as stolen
-            res.json({
-                status: 200,
-                message: "Your Card is blocked. Please contact bank", 
-            });
-        }
-    } else {
-        res.json({
-            status: 200,
-            message: "Card has been expired",
-           
+  getBalanceByCardNo(card_no)
+    .then((balance) => {
+      // 1000 is the minimum compulsory money to be kept in account
+      if (balance < withdrawal_amt + 1000) {
+        return res.json({
+          status: 200,
+          message: "Insufficient balance for withdrawal.",
         });
-    }       
-  });
-};
+      }
 
-/*
-    Input: Card Number, Pin
-    Function: Check whether Pin is correct or not
-              by checking the hash value of pin.
-              ( This would be always called after succesfull
-                verification so no need to check status and all )
-    Output: Appropriate message
-*/
-const handleAuthentication = (req, res) => {
-  console.log("hiii");
-  const { cardNumber, pin } = req.body;
+      // Perform withdrawal transaction
+      pool.getConnection((err, connection) => {
+        if (err) {
+          console.error("Error connecting to MySQL:", err);
+          return res.json({
+            status: 500,
+            message: "Withdrawal failed. Please try again later.",
+          });
+        }
 
-  const sql = `Select pin from card where card_number=?;`;
-  pool.query(sql, [cardNumber], (err, result, fields) => {
-    if (err) throw err;
-    if (!result.length) {
-      res.json({
-        status: 401,
-        message: "Invalid Card Number",
+        connection.beginTransaction((err) => {
+          if (err) {
+            connection.release();
+            console.error("Error starting transaction:", err);
+            return res.json({
+              status: 500,
+              message: "Withdrawal failed. Please try again later.",
+            });
+          }
+
+          // Deduct the withdrawal amount from the card balance
+          const newBalance = balance - withdrawal_amt;
+          const updateCardSql = `UPDATE card AS c JOIN account AS a USING(account_no) SET a.balance =? WHERE c.card_no =?;`;
+          connection.query(updateCardSql, [newBalance, card_no], (err, result) => {
+            if (err) {
+              connection.rollback(() => {
+                connection.release();
+                console.error("Error updating card balance:", err);
+                return res.json({
+                  status: 500,
+                  message: "Withdrawal failed. Please try again later.",
+                });
+              });
+            }
+            else {
+              console.log("Updated balance succesfully");
+            }
+            // Update ATM denominations
+            const { n_100, n_200, n_500, n_2000 } = denominations;
+            const updateATMSql = `UPDATE atm_machine SET n_100=n_100-?, n_200=n_200-?, n_500=n_500-?, n_2000=n_2000-? WHERE atm_id=?;`;
+            connection.query(updateATMSql, [n_100, n_200, n_500, n_2000, atm_id], (err, result) => {
+              if (err) {
+                connection.rollback(() => {
+                  connection.release();
+                  console.error("Error updating ATM denominations:", err);
+                  return res.json({
+                    status: 500,
+                    message: "Withdrawal failed. Please try again later.",
+                  });
+                });
+              }
+
+              connection.commit((err) => {
+                if (err) {
+                  connection.rollback(() => {
+                    connection.release();
+                    console.error("Error committing transaction:", err);
+                    return res.json({
+                      status: 500,
+                      message: "Withdrawal failed. Please try again later.",
+                    });
+                  });
+                }
+
+                connection.release();
+                return res.json({
+                  status: 200,
+                  message: "Withdrawal successful.",
+                });
+              });
+            });
+          });
+        });
       });
-    } else if (match(pin, result[0]["pin"])) {
-        res.json({
-            status: 200,
-            message: "Authentication Successful",
-            
-        }); 
-    } else {
-      res.json({
-        status: 401,
-        message: "Invalid PIN",
+    })
+    .catch((err) => {
+      console.error("Error fetching balance:", err);
+      return res.json({
+        status: 500,
+        message: "Withdrawal failed. Please try again later.",
       });
-    }
-  });
-};
+    });
+}
 
-module.exports = { handleAuthentication, handleVerification };
+
+
+module.exports = { handleWithdrawal };
