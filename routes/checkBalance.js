@@ -10,7 +10,7 @@ const {
     } = require("../middleware/authenticate")
 
 //request balance 
-router.post("/check",handleAuthentication ,checkBalance);
+router.post("/check",handleAuthentication ,checkBalance );
 
 // //Verification
 // router.post("/verify", handleVerification);

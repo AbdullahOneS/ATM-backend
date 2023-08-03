@@ -1,4 +1,3 @@
-const { log } = require('console');
 const mysql = require('mysql2')
 
 // Set up a connection to the MySQL database

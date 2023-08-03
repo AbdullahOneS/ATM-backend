@@ -11,11 +11,11 @@ const { addLog } = require("../helper/log");
 */
 const handleVerification = (req, res) => {
 
-  const { cardNumber } = req.body;
+  const { card_no } = req.body;
 
 
   const sql = `Select status, expiry_date from card where card_no=?;`;
-  pool.query(sql, [cardNumber], (err, result, fields) => {
+  pool.query(sql, [card_no], (err, result, fields) => {
     if (err) throw err;
     if (!result.length) {
       res.json({
@@ -27,7 +27,7 @@ const handleVerification = (req, res) => {
           //to add the logs
           var now = new Date().toISOString();
 
-          addLog(cardNumber,now.slice(0, 10),now.slice(11, 19),"Card Verified successfully");
+          addLog(card_no,now.slice(0, 10),now.slice(11, 19),"Card Verified successfully");
           
           res.json({
                 status: 200,
@@ -66,10 +66,10 @@ const handleVerification = (req, res) => {
 */
 function handleAuthentication (req, res, next) {
   console.log("hiii");
-  const { cardNumber, pin } = req.body;
+  const { card_no, pin } = req.body;
 
   const sql = `Select pin from card where card_no=?;`;
-  pool.query(sql, [cardNumber], (err, result, fields) => {
+  pool.query(sql, [card_no], (err, result, fields) => {
     console.log(result[0]["pin"] + " =====> " + pin);
 
     if (err) throw err;

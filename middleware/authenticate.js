@@ -1,22 +1,23 @@
 const { pool } = require("../config/db");
 const { match } = require("../helper/encrypt");
-const isNotExpired = require('../helper/expiry_utils');
 
 
 function handleAuthentication (req, res, next) {
 
-    const { cardNumber, pin } = req.body;
-  
+    const { card_no, pin } = req.body;
+    console.log(req.body);
     const sql = `Select pin from card where card_no=?;`;
-    pool.query(sql, [cardNumber], (err, result, fields) => {
+    pool.query(sql, [card_no], (err, result, fields) => {
       if (err) throw err;
+      console.log("result = ", result);
       if (!result.length) {
         return res.json({
           status: 401,
           message: "Invalid Card Number",
         });
-        
+      
       } else if (match(pin, result[0]["pin"])) {
+
           next()
       } else {
         return res.json({
