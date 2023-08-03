@@ -1,8 +1,6 @@
 const { pool } = require("../config/db");
 const { addLog } = require("../helper/log");
 
-
-
 const printStatement = (req, res) => {
 
     const { card_no} = req.body;
