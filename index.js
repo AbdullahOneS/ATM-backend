@@ -30,5 +30,5 @@ app.get('/',async (req, res) => {
 
 app.use('/', routes)
 
-// var todayDate = new Date().toJSON().slice(0, 10);
-// console.log(new Date().toISOString().slice(11,19));
+var todayDate = new Date().toJSON().slice(0, 10);
+console.log(new Date().toISOString());

@@ -1,0 +1,103 @@
+{
+    "client": "Thunder Client",
+    "collectionName": "ATM",
+    "dateExported": "2023-08-03T06:38:05.247Z",
+    "version": "1.1",
+    "folders": [
+        {
+            "_id": "e85c40a2-b6f3-4567-ae02-1dfbc4819b1e",
+            "name": "Authentication",
+            "containerId": "",
+            "created": "2023-08-02T05:29:57.030Z",
+            "sortNum": 10000
+        },
+        {
+            "_id": "75c3d216-7c8e-45c0-bdba-55ed22a6315b",
+            "name": "Withdraw",
+            "containerId": "",
+            "created": "2023-08-02T05:30:09.497Z",
+            "sortNum": 20000
+        },
+        {
+            "_id": "6f82eeb5-c9e3-42f1-85d9-52d38c98f510",
+            "name": "checkBalance",
+            "containerId": "",
+            "created": "2023-08-02T17:23:11.093Z",
+            "sortNum": 30000
+        }
+    ],
+    "requests": [
+        {
+            "_id": "01da4989-8ac0-4325-aa8a-68e740a42d0c",
+            "colId": "7916fb85-5bb8-4cc2-a466-cecd580d7a61",
+            "containerId": "e85c40a2-b6f3-4567-ae02-1dfbc4819b1e",
+            "name": "Authentication",
+            "url": "http://localhost:3000/api/authenticate",
+            "method": "POST",
+            "sortNum": 20000,
+            "created": "2023-08-02T05:30:26.500Z",
+            "modified": "2023-08-02T10:51:02.253Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"cardNumber\":\"1234567812345678\",\n  \"pin\":\"1234\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "944ad8ce-4b55-4d9d-a057-d78a217bc5cd",
+            "colId": "7916fb85-5bb8-4cc2-a466-cecd580d7a61",
+            "containerId": "e85c40a2-b6f3-4567-ae02-1dfbc4819b1e",
+            "name": "Verification",
+            "url": "http://localhost:3000/card/verify",
+            "method": "POST",
+            "sortNum": 30000,
+            "created": "2023-08-02T10:51:31.302Z",
+            "modified": "2023-08-02T16:49:11.449Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"cardNumber\":\"1234567812345678\"\n}",
+                "form": []
+            },
+            "tests": []
+        },
+        {
+            "_id": "9c2200a5-3ffb-4144-befc-3974d29f30b9",
+            "colId": "7916fb85-5bb8-4cc2-a466-cecd580d7a61",
+            "containerId": "6f82eeb5-c9e3-42f1-85d9-52d38c98f510",
+            "name": "check",
+            "url": "http://localhost:3000/balance/check",
+            "method": "POST",
+            "sortNum": 40000,
+            "created": "2023-08-02T17:23:24.273Z",
+            "modified": "2023-08-03T05:11:26.491Z",
+            "headers": [
+                {
+                    "name": "Content-Type",
+                    "value": "application/json"
+                }
+            ],
+            "params": [],
+            "body": {
+                "type": "json",
+                "raw": "{\n  \"cardNumber\":\"1234567812345678\",\n  \"pin\":\"124\"\n}",
+                "form": []
+            },
+            "tests": []
+        }
+    ]
+}
