@@ -70,7 +70,7 @@ function handleAuthentication (req, res, next) {
 
   const sql = `Select pin from card where card_no=?;`;
   pool.query(sql, [card_no], (err, result, fields) => {
-    console.log(result[0]["pin"] + " =====> " + pin);
+    // console.log(result[0]["pin"] + " =====> " + pin);
 
     if (err) throw err;
     if (!result.length) {

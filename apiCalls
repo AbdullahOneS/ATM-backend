@@ -46,7 +46,7 @@
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"cardNumber\":\"1234567812345678\",\n  \"pin\":\"1234\"\n}",
+                "raw": "{\n  \"card_no\":\"1234567812345678\",\n  \"pin\":\"1234\"\n}",
                 "form": []
             },
             "tests": []
@@ -70,7 +70,7 @@
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"cardNumber\":\"1234567812345678\"\n}",
+                "raw": "{\n  \"card_no\":\"1234567812345678\"\n}",
                 "form": []
             },
             "tests": []
@@ -94,7 +94,7 @@
             "params": [],
             "body": {
                 "type": "json",
-                "raw": "{\n  \"cardNumber\":\"1234567812345678\",\n  \"pin\":\"124\"\n}",
+                "raw": "{\n  \"card_no\":\"1234567812345678\",\n  \"pin\":\"124\"\n}",
                 "form": []
             },
             "tests": []

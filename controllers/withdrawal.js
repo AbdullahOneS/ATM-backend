@@ -54,9 +54,7 @@ function handleWithdrawal(req, res) {
                 });
               });
             }
-            else {
-              console.log("Updated balance succesfully");
-            }
+            
             // Update ATM denominations
             const { n_100, n_200, n_500, n_2000 } = denominations;
             const updateATMSql = `UPDATE atm_machine SET n_100=n_100-?, n_200=n_200-?, n_500=n_500-?, n_2000=n_2000-? WHERE atm_id=?;`;
