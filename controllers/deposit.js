@@ -3,7 +3,7 @@ const { addLog } = require("../helper/log");
 
 const addDeposit = (req,res)=>{
 
-    const {cardNumber,amount,atm_id,transaction_type} = req.body;
+    const {card_no,amount,atm_id,transaction_type} = req.body;
     const {n_100,n_200,n_500,n_2000} = req.body.denomination;
     const account_no = req.account_no; 
 
