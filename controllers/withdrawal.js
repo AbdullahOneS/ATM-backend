@@ -102,4 +102,37 @@ function handleWithdrawal(req, res) {
     });
 }
 
-module.exports = { handleWithdrawal };
+const getDenomination = async(req,res) =>{
+  const {atm_id} = req.body;
+
+  const sql = `select n_100,n_200,n_500,n_2000 from atm_machine where atm_id = ?;`;
+  
+  pool.query(sql,[atm_id], (err, result) => {
+    if(err){
+      return res.json({
+        status: 401,
+        message: "Unable to fetch denomination",
+      });
+    }else{
+      if(!result.length){
+        return res.json({
+          status: 401,
+          message: "Invalid atm_id",
+        });
+      }else{
+        return res.json({
+          status: 200,
+          data:{
+            n_100: result[0]["n_100"],
+            n_200: result[0]["n_200"],
+            n_500: result[0]["n_500"],
+            n_2000: result[0]["n_2000"]
+          }
+        });
+      }
+    }
+  })
+
+}
+
+module.exports = { handleWithdrawal , getDenomination};
