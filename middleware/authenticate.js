@@ -1,5 +1,7 @@
 const { pool } = require("../config/db");
 const { match } = require("../helper/encrypt");
+const { addLog } = require("../helper/log");
+const { failedPinAttempts, deleteAttemptsByCardNo } = require("../helper/pinAttempts");
 
 
 function handleAuthentication (req, res, next) {
@@ -14,16 +16,21 @@ function handleAuthentication (req, res, next) {
     pool.query(sql, [card_no], (err, result, fields) => {
       if (err) throw err;
       if (!result.length) {
+        addLog(card_no, "Invalid card number");
         return res.json({
           status: 401,
           message: "Invalid Card Number",
         });
       
       } else if (match(pin, result[0]["pin"])) {
+        deleteAttemptsByCardNo(card_no)
+        addLog(card_no, "Authenticated Successfully");
           req.account_no = result[0]["account_no"]
           req.account_name = result[0]["name"]
           next()
       } else {
+        addLog(card_no, "Invalid PIN");
+        failedPinAttempts(card_no);
         return res.json({
           status: 401,
           message: "Invalid PIN",

@@ -18,9 +18,7 @@ const checkBalance = (req, res) => {
             message: "Invalid Card Number",
           });
         }else{
-            var now = new Date().toISOString();
-
-            // addLog(card_no,now.slice(0, 10),now.slice(11, 19),"Fetched Query Balance Successfully");
+            addLog(card_no, "Fetched Query Balance Successfully");
             res.json({
                 status: 200,
                 data: {
