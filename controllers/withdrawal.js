@@ -1,5 +1,5 @@
 const { pool } = require("../config/db");
-const  getBalanceByCardNo  = require("../helper/getBalanceByCardNo");
+const  getBalanceByAccNo  = require("../helper/getBalanceByAccNo");
 
 /* input: withdrawal_amt, denominations ( eg. {n_2000: 5, n_500: 3, n_200: 4, n_100:4}), card_no
    functions: Check if account balance is sufficient
@@ -10,7 +10,7 @@ function handleWithdrawal(req, res) {
   console.log(req.body);
   const { withdrawal_amt, denominations, card_no, atm_id } = req.body;
 
-  getBalanceByCardNo(card_no)
+  getBalanceByAccNo(req.account_no)
     .then((balance) => {
       // 1000 is the minimum compulsory money to be kept in account
       if (balance < withdrawal_amt + 1000) {
@@ -101,7 +101,5 @@ function handleWithdrawal(req, res) {
       });
     });
 }
-
-
 
 module.exports = { handleWithdrawal };
