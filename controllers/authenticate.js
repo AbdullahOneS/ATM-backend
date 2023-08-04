@@ -13,8 +13,11 @@ const handleVerification = (req, res) => {
 
   const { card_no } = req.body;
 
-
-  const sql = `Select status, expiry_date from card where card_no=?;`;
+  
+  const sql = `select status,expiry_date,a.account_no,pin,c.name
+                from card ca
+                left join account a on a.account_no = ca.account_no
+                left join customer c on a.customer_id = c.customer_id where ca.card_no = ?; `;
   pool.query(sql, [card_no], (err, result, fields) => {
     if (err) throw err;
     if (!result.length) {
@@ -27,13 +30,13 @@ const handleVerification = (req, res) => {
     } else if (isNotExpired(result[0]["expiry_date"]+"")) {   //Check if Card did not exceed the expiry date
         if (result[0]["status"] == "active") {    // Card is active User can perform trnasactions
           //to add the logs
-          var now = new Date().toISOString();
 
           addLog(card_no,"Card Verified successfully");
           
           res.json({
                 status: 200,
                 message: "Card is Active",
+                data: result[0]["name"]
             });
             
         } else if (result[0]["status"] == "inactive"){   // Card is Inactive, Exceeded 3 attmepts
@@ -70,7 +73,6 @@ const handleVerification = (req, res) => {
     Output: Appropriate message
 */
 function handleAuthentication (req, res, next) {
-  console.log("hiii");
   const { card_no, pin } = req.body;
 
   const sql = `Select pin from card where card_no=?;`;
