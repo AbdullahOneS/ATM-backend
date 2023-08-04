@@ -11,11 +11,8 @@ const { tryActivation } = require("../helper/tryActivation");
     Output: Appropriate status code and message
 */
 const handleVerification = (req, res) => {
-
   const { card_no } = req.body;
-
-
-  const sql = `select status,expiry_date,a.account_no,pin,c.name
+  const sql = `select status,expiry_date,a.account_no,pin,c.name, a.account_type
                 from card ca
                 left join account a on a.account_no = ca.account_no
                 left join customer c on a.customer_id = c.customer_id where ca.card_no = ?; `;
@@ -38,10 +35,15 @@ const handleVerification = (req, res) => {
           res.json({
                 status: 200,
                 message: "Card is Active",
+                data: {
+                  name: result[0]['name'],
+                  type: result[0]['account_type'],
+
+                }
             });
             
         } else if (result[0]["status"] == "inactive"){   // Card is Inactive, Exceeded 3 attmepts
-          tryActivation(card_no, res);
+          tryActivation(card_no, res, result[0]['name'], result[0]['account_type']);
           addLog(card_no,"Card Verification Failed");
             res.json({
                 status: 401,
@@ -62,9 +64,6 @@ const handleVerification = (req, res) => {
         });
       }
     });
-  } catch (err) {
-    console.log(err);
-  }
 };
 
 /*

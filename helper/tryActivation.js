@@ -1,6 +1,6 @@
 const { pool } = require("../config/db");
 
-function tryActivation(card_no, res) {
+function tryActivation(card_no, res, name, type) {
   console.log(card_no);
   const selectSql = `SELECT *
     FROM inactive_card 
@@ -46,6 +46,10 @@ function tryActivation(card_no, res) {
                 status: 200,
                 message:
                   "Your card is Active ",
+                  data: {
+                    'name': name,
+                    'type': type
+                  }
               });
               console.log("True");
               return true;
