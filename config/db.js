@@ -8,18 +8,18 @@ const pool = mysql.createPool({
     database: "atm"
 });
 
-// pool.getConnection((err, connection) => {
-//     if (err) {
-//       console.error('Error connecting to MySQL:', err);
-//       return;
-//     }
+pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Error connecting to MySQL:', err);
+      return;
+    }
   
-//     console.log('Connected to MySQL database!');
-//     // Perform any database operations here if needed
+    console.log('Connected to MySQL database!');
+    // Perform any database operations here if needed
   
-//     // Release the connection when done
-//     connection.release();
-//   });
+    // Release the connection when done
+    connection.release();
+  });
 
   
 module.exports = { pool }
