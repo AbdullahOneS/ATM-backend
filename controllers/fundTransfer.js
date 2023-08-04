@@ -1,5 +1,7 @@
 const { pool } = require("../config/db");
 const getBalanceByAccNo = require("../helper/getBalanceByAccNo");
+const { addLog } = require("../helper/log");
+
 
 async function handleFundTransfer(req, res) {
   const { receiver_acc_no, amount } = req.body;
@@ -97,4 +99,38 @@ async function handleFundTransfer(req, res) {
   }
 }
 
-module.exports = { handleFundTransfer };
+// to fetch the account holder name
+
+const getAccountName = async(req,res) =>{
+    const {receiver_acc_no} = req.body
+    if(!receiver_acc_no){
+      return res.json({
+        status: 500,
+        message: "receiver_acc_no cannot be empty",
+      });
+    }else{
+      const sql =`select c.name from account a left join customer c on  a.customer_id = c.customer_id where a.account_no = ?;`;
+
+      pool.query(sql, [receiver_acc_no], (err, result) => {
+        if (err) {
+                console.error("Error updating sender account balance:", err);
+                return res.json({
+                    status: 500,
+                    message: "Invalid Sender Account No",
+                });
+        }else{
+          return res.json({
+            status: 200,
+            data: result[0]["name"],
+        });
+        }
+      });
+
+
+
+
+    }
+}
+
+
+module.exports = { handleFundTransfer,getAccountName };
