@@ -3,7 +3,7 @@ const getBalanceByAccNo = require("../helper/getBalanceByAccNo");
 const { addLog } = require("../helper/log");
 
 
-async function handleFundTransfer(req, res) {
+async function handleFundTransfer(req, res, next) {
   const { receiver_acc_no, amount, card_no } = req.body;
   const sender_acc_no = req.account_no;
 
@@ -97,10 +97,10 @@ async function handleFundTransfer(req, res) {
                         } else {
                         addLog(card_no, "Transfer Succcessful");
                         connection.release();
-                        return res.json({
-                          status: 200,
-                          message: "Fund transfer successful.",
-                        });
+                        // req.balance = balance
+                        req.t_status = "success";
+                        req.t_type = "withdrawal";
+                        next();
                       }
                     });
                   }
