@@ -1,6 +1,6 @@
 const { pool } = require("../config/db");
 const getBalanceByAccNo = require("../helper/getBalanceByAccNo");
-
+const {addLog} = require("../helper/log");
 /* input: withdrawal_amt, denominations ( eg. {n_2000: 5, n_500: 3, n_200: 4, n_100:4}), card_no
    functions: Check if account balance is sufficient
               Use transaction to update balance and atm_denominations and rollback if neccessary
@@ -14,7 +14,7 @@ function handleWithdrawal(req, res) {
     .then((balance) => {
       // 1000 is the minimum compulsory money to be kept in account
       if (balance < withdrawal_amt + 1000) {
-        addLog(card_no, "Withdrawal Failed because of insufficient amount");
+        // addLog(card_no, "Withdrawal Failed because of insufficient amount");
         
         return res.json({
           status: 200,

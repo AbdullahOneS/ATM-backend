@@ -4,7 +4,7 @@ function tryActivation(card_no, res, name, type) {
   console.log(card_no);
   const selectSql = `SELECT *
     FROM inactive_card 
-    WHERE card_no='1234567812345678' AND date_time < DATE_SUB(NOW(), INTERVAL 24 HOUR);`;
+    WHERE card_no=? AND date_time < DATE_SUB(NOW(), INTERVAL 24 HOUR);`;
   pool.query(selectSql, [card_no], (err, result) => {
     console.log("Select reuslt", result);
     if (err) {
