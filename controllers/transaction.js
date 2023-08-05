@@ -16,7 +16,7 @@ const addTransaction = (req, res) => {
         if (!result) {
             addLog(card_no,"Transaction Failed");
           res.json({
-            status: 400,
+            status: 401,
             message: "Invalid Card Number",
           });
         }else{

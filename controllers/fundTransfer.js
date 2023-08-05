@@ -14,7 +14,7 @@ async function handleFundTransfer(req, res) {
     if (senderBalance < amount + 1000) {
       addLog(card_no, "Insufficient Balance");
       return res.json({
-        status: 200,
+        status: 402,
         message: "Insufficient balance for fund transfer.",
       });
     }
@@ -122,7 +122,6 @@ async function handleFundTransfer(req, res) {
 }
 
 // to fetch the account holder name
-
 const getAccountName = async(req,res) =>{
     const {receiver_acc_no} = req.body
     if(!receiver_acc_no){

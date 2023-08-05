@@ -18,7 +18,7 @@ function handleWithdrawal(req, res, next) {
         // addLog(card_no, "Withdrawal Failed because of insufficient amount");
         
         return res.json({
-          status: 200,
+          status: 402,
           message: "Insufficient balance for withdrawal.",
         });
       }

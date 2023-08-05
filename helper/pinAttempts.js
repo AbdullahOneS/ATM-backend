@@ -1,11 +1,5 @@
 const { pool } = require("../config/db");
 
-// function getDateTime24HoursAgo() {
-//     const now = new Date();
-//     now.setHours(now.getHours() - 24);
-//     return now.toISOString();
-// }  
-
 function failedPinAttempts(card_no) {
     // const dateTime24HoursAgo = getDateTime24HoursAgo();
     // console.log(dateTime24HoursAgo);

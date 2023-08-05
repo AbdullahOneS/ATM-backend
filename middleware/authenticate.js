@@ -18,7 +18,7 @@ function handleAuthentication (req, res, next) {
       if (!result.length) {
         addLog(card_no, "Invalid card number");
         return res.json({
-          status: 401,
+          status: 403,
           message: "Invalid Card Number",
         });
       

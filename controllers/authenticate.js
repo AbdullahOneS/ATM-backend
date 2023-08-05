@@ -22,7 +22,7 @@ const handleVerification = (req, res) => {
       addLog(card_no,"Card Verification Failed");
 
       res.json({
-        status: 400,
+        status: 401,
         message: "Invalid Card Number",
       });
     } else if (isNotExpired(result[0]["expiry_date"]+"")) {   //Check if Card did not exceed the expiry date

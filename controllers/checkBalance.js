@@ -14,7 +14,7 @@ const checkBalance = (req, res) => {
         if (err) throw err;
         if (!result.length) {
           res.json({
-            status: 400,
+            status: 401,
             message: "Invalid Card Number",
           });
         }else{

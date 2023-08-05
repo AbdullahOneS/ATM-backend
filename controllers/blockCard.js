@@ -15,7 +15,7 @@ const handleSendOTP = async (req, res) => {
     console.log(results);
     if (err) throw err;
     if (!results.length) {
-      results.json({ status: 404, message: "Incorrect email" });
+      results.json({ status: 401, message: "Incorrect email" });
     } else {
       const email = results[0]["email"];
       const result = await mailOTP(email, otp);
@@ -37,7 +37,7 @@ const handleSendOTP = async (req, res) => {
             if (!result.affectedRows) {
               console.log("OTP not added to db");
               res.json({
-                status: 300,
+                status: 500,
                 message: `${result.affectedRows} otp not addded but sent succesfully`,
               });
             }
@@ -63,7 +63,7 @@ const handleVerifyOtp = (req, res) => {
   pool.query(sql, [email], async function (err, result) {
     if (err) throw err;
     if (!result.length) {
-      res.json({ status: 404, message: "Please first request for OTP" });
+      res.json({ status: 402, message: "Please first request for OTP" });
     } else {
       console.log(result);
       if (1 ||result[0]["time"].getTime() + 300000 >= new Date()) {
@@ -86,11 +86,11 @@ const handleVerifyOtp = (req, res) => {
         } else {
           console.log("Incorrect otp");
           // await deleteOTP(email)
-          res.json({ status: 404, message: "Incorrect OTP" });
+          res.json({ status: 403, message: "Incorrect OTP" });
         }
       } else {
         console.log("Expired");
-        res.json({ status: 404, message: "Expired" });
+        res.json({ status: 401, message: "Expired" });
       }
     }
   });
