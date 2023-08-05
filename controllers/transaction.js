@@ -23,7 +23,7 @@ const addTransaction = (req, res) => {
             addLog(card_no,"Transaction Completed");
             res.json({
                 status: 200,
-                message:"Transaction Successful",
+                message: t_type+" Successful",
                 data: {
                     transaction_id: result.insertId,
                     transaction_type: t_type,
@@ -33,8 +33,8 @@ const addTransaction = (req, res) => {
                     card_no: card_no,
                     account_no: "XXXXXXXXX"+req.account_no.slice(10,14),
                     accout_name: req.account_name,
-                    atm_id: atm_id
-                    
+                    atm_id: atm_id,
+                    balance: req.balance
                 }
             });
         } 

@@ -1,19 +1,20 @@
 const { pool } = require("../config/db");
 const getBalanceByAccNo = require("../helper/getBalanceByAccNo");
 const {addLog} = require("../helper/log");
-/* input: withdrawal_amt, denominations ( eg. {n_2000: 5, n_500: 3, n_200: 4, n_100:4}), card_no
+/* input: amount (withdrawal_amt), denominations ( eg. {n_2000: 5, n_500: 3, n_200: 4, n_100:4}), card_no
    functions: Check if account balance is sufficient
               Use transaction to update balance and atm_denominations and rollback if neccessary
    output: status of transaction
 */
-function handleWithdrawal(req, res) {
+function handleWithdrawal(req, res, next) {
   console.log(req.body);
-  const { withdrawal_amt, denominations, card_no, atm_id } = req.body;
+  const { amount, denominations, card_no, atm_id } = req.body;
 
   getBalanceByAccNo(req.account_no)
     .then((balance) => {
+      
       // 1000 is the minimum compulsory money to be kept in account
-      if (balance < withdrawal_amt + 1000) {
+      if (balance < amount + 1000) {
         // addLog(card_no, "Withdrawal Failed because of insufficient amount");
         
         return res.json({
@@ -45,7 +46,7 @@ function handleWithdrawal(req, res) {
           }
           
           // Deduct the withdrawal amount from the card balance
-          const newBalance = balance - withdrawal_amt;
+          const newBalance = balance - amount;
           const updateCardSql = `UPDATE card AS c JOIN account AS a USING(account_no) SET a.balance =? WHERE c.card_no =?;`;
           connection.query(
             updateCardSql,
@@ -94,11 +95,15 @@ function handleWithdrawal(req, res) {
                           });
                         });
                       } else {
+                        req.balance = balance
+                        req.t_status = "success";
+                        req.t_type = "withdrawal";
                         connection.release();
-                        return res.json({
-                          status: 200,
-                          message: "Withdrawal successful.",
-                        });
+                        next();
+                        // return res.json({
+                        //   status: 200,
+                        //   message: "Withdrawal successful.",
+                        // });
                       }
                     });
                   }
