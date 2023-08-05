@@ -4,7 +4,7 @@ const { addLog } = require("../helper/log");
 
 
 async function handleFundTransfer(req, res) {
-  const { receiver_acc_no, amount } = req.body;
+  const { receiver_acc_no, amount, card_no } = req.body;
   const sender_acc_no = req.account_no;
 
   try {
@@ -67,7 +67,7 @@ async function handleFundTransfer(req, res) {
                 updateReceiverSql,
                 [amount, receiver_acc_no],
                 (err, result) => {
-                  addLog(card_no, "Transfer Failed While updating reciever balance");
+                  addLog(card_no, "Transfer Failed While updating balance");
                   if (err) {
                     connection.rollback(() => {
                       connection.release();
