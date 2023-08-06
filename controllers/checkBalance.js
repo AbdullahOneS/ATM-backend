@@ -9,7 +9,7 @@ const checkBalance = (req, res) => {
     left join account on card.account_no = account.account_no
     left join customer on account.customer_id = customer.customer_id
     where card_no = ?;`;
-
+  
     pool.query(sql, [card_no], (err, result, fields) => {
         if (err) throw err;
         if (!result.length) {

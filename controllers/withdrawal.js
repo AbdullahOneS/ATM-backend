@@ -7,7 +7,6 @@ const {addLog} = require("../helper/log");
    output: status of transaction
 */
 function handleWithdrawal(req, res, next) {
-  console.log(req.body);
   const { amount, denominations, card_no, atm_id } = req.body;
 
   getBalanceByAccNo(req.account_no)

@@ -5,6 +5,7 @@ const card = require("./card")
 const checkBalance = require("./checkBalance")
 const deposit = require("./deposit")
 const blockCard = require("./blockCard")
+const otp = require("./otp")
 
 const withdrawal = require("./withdrawal")
 const fundTransfer = require("./fundTransfer")
@@ -15,5 +16,6 @@ router.use("/fundTransfer", fundTransfer)
 router.use("/balance",checkBalance)
 router.use("/deposit",deposit)
 router.use("/block",blockCard)
+router.use("/otp",otp)
 
 module.exports = router

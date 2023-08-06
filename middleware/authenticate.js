@@ -8,7 +8,7 @@ function handleAuthentication (req, res, next) {
 
     const { card_no, pin } = req.body;
     
-    const sql = `select a.account_no,pin,c.name
+    const sql = `select a.account_no, pin, c.name, c.email 
                 from card ca
                 left join account a on a.account_no = ca.account_no
                 left join customer c on a.customer_id = c.customer_id where ca.card_no = ?; `;
@@ -26,6 +26,7 @@ function handleAuthentication (req, res, next) {
         deleteAttemptsByCardNo(card_no)
         addLog(card_no, "Authenticated Successfully");
           req.account_no = result[0]["account_no"]
+          req.body.email = result[0]["email"]
           req.account_name = result[0]["name"]
           next()
       } else {
