@@ -8,7 +8,7 @@ const addTransaction = (req, res) => {
     const t_type = req.t_type;
 
 
-    const sql = `insert into transaction(transaction_type,receiver_acc_no,transaction_status,amt,card_no,atm_id)
+    const sql = `insert into transaction(transaction_type,receiver_acc_no,transaction_status,amount,card_no,atm_id)
                 values(?,?,?,?,?,?)`;
 
     pool.query(sql, [t_type,r_account_no,t_status,amount,card_no,atm_id], (err, result, fields) => {

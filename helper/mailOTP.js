@@ -1,11 +1,12 @@
 const nodemailer = require('nodemailer')
+const dotenv = require("dotenv")
 
 module.exports = async function sendOTP(email, otp) {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
       user: "anemosenergies89@gmail.com",
-      pass: "cvfifnpskvzypwbi",
+      pass: process.env.MAIL_PASSKEY || console.error("mail passkey missing"),
     },
   });
 

@@ -95,7 +95,7 @@ function handleWithdrawal(req, res, next) {
                           });
                         });
                       } else {
-                        req.balance = balance
+                        req.balance = newBalance
                         req.t_status = "success";
                         req.t_type = "withdrawal";
                         connection.release();

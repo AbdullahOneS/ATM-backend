@@ -1,4 +1,5 @@
 const { pool } = require("../config/db");
+const getBalanceByAccNo = require("../helper/getBalanceByAccNo");
 const { addLog } = require("../helper/log");
 
 const addDeposit = (req, res, next) => {
@@ -63,7 +64,7 @@ const addDeposit = (req, res, next) => {
                         });
                       });
                     } else {
-                      connection.commit((err) => {
+                      connection.commit(async (err) => {
                         if (err) {
                           addLog(card_no, "Deposit Failed (Server issue)");
                           connection.rollback(() => {
@@ -74,18 +75,20 @@ const addDeposit = (req, res, next) => {
                               message: "Deposit failed. Please try again later.",
                             });
                           });
+                        } else {
+                          req.balance = await getBalanceByAccNo(account_no)
+                          connection.release();
+                          addLog(
+                            card_no,
+                            `₹${amount} Deposited Successfully`
+                          );
+    
+                          req.t_status = "success";
+                          req.t_type = "deposit";
+                          next();
                         }
-  
-                        connection.release();
-                        addLog(
-                          card_no,
-                          `₹${amount} Deposited Successfully`
-                        );
-  
-                        req.t_status = "success";
-                        req.t_type = "deposit";
-                        next();
                       });
+                    
                     }  
                   }
                 );
