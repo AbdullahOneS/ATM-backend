@@ -7,6 +7,7 @@ const {addLog} = require("../helper/log");
    output: status of transaction
 */
 function handleWithdrawal(req, res, next) {
+  console.log("here", req.body);
   const { amount, denominations, card_no, atm_id } = req.body;
 
   getBalanceByAccNo(req.account_no)
@@ -14,7 +15,7 @@ function handleWithdrawal(req, res, next) {
       
       // 1000 is the minimum compulsory money to be kept in account
       if (balance < amount + 1000) {
-        // addLog(card_no, "Withdrawal Failed because of insufficient amount");
+        addLog(card_no, "Withdrawal Failed because of insufficient amount");
         
         return res.json({
           status: 402,

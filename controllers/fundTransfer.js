@@ -2,7 +2,6 @@ const { pool } = require("../config/db");
 const getBalanceByAccNo = require("../helper/getBalanceByAccNo");
 const { addLog } = require("../helper/log");
 
-
 async function handleFundTransfer(req, res, next) {
   const { receiver_acc_no, amount, card_no } = req.body;
   const sender_acc_no = req.account_no;
@@ -11,7 +10,7 @@ async function handleFundTransfer(req, res, next) {
     const senderBalance = await getBalanceByAccNo(sender_acc_no);
     console.log(senderBalance);
     // 1000 is the minimum compulsory money to be kept in the account
-    if (senderBalance < amount + 1000) {
+    if (senderBalance === undefined || senderBalance < amount + 1000) {
       addLog(card_no, "Insufficient Balance");
       return res.json({
         status: 402,
@@ -28,7 +27,7 @@ async function handleFundTransfer(req, res, next) {
           message: "Fund transfer failed. Please try again later.",
         });
       }
-      
+
       connection.beginTransaction((err) => {
         if (err) {
           addLog(card_no, "Transfer Failed (Server Issue)");
@@ -39,10 +38,10 @@ async function handleFundTransfer(req, res, next) {
             message: "Fund transfer failed. Please try again later.",
           });
         }
-        
+
         // Update sender's account balance
         console.log(sender_acc_no, senderBalance);
-        
+
         const updateSenderSql = `UPDATE account SET balance = balance - ? WHERE account_no = ?;`;
         connection.query(
           updateSenderSql,
@@ -50,7 +49,7 @@ async function handleFundTransfer(req, res, next) {
           (err, result) => {
             if (err) {
               addLog(card_no, "Transfer Failed While updating sender balance");
-              
+
               connection.rollback(() => {
                 connection.release();
                 console.error("Error updating sender account balance:", err);
@@ -58,6 +57,11 @@ async function handleFundTransfer(req, res, next) {
                   status: 500,
                   message: "Fund transfer failed. Please try again later.",
                 });
+              });
+            } else if(!result.affectedRows ) {
+              return res.json({
+                status: 500,
+                message: "Cannot update sender balance. Inavlid card no",
               });
             } else {
               // Update receiver's account balance
@@ -78,9 +82,19 @@ async function handleFundTransfer(req, res, next) {
                       return res.json({
                         status: 500,
                         message:
-                        "Fund transfer failed. Please try again later.",
+                          "Fund transfer failed. Please try again later.",
                       });
                     });
+                  } else if(!result.affectedRows ) {
+                    addLog(card_no, "Transfer Failed (Server Issue)");
+                        connection.rollback(() => {
+                          connection.release();
+                          console.error("Error committing transaction:", err);
+                          return res.json({
+                            status: 500,
+                            message: "Cannot update reciever balance. Inavlid account no",
+                          });
+                        });
                   } else {
                     connection.commit((err) => {
                       if (err) {
@@ -92,14 +106,14 @@ async function handleFundTransfer(req, res, next) {
                             status: 500,
                             message:
                               "Fund transfer failed. Please try again later.",
-                            });
                           });
-                        } else {
+                        });
+                      } else {
                         addLog(card_no, "Transfer Succcessful");
                         connection.release();
                         // req.balance = balance
                         req.t_status = "success";
-                        req.t_type = "withdrawal";
+                        req.t_type = "Fund Transfer";
                         next();
                       }
                     });
@@ -122,36 +136,36 @@ async function handleFundTransfer(req, res, next) {
 }
 
 // to fetch the account holder name
-const getAccountName = async(req,res) =>{
-    const {receiver_acc_no} = req.body
-    if(!receiver_acc_no){
-      return res.json({
-        status: 500,
-        message: "receiver_acc_no cannot be empty",
-      });
-    }else{
-      const sql =`select c.name from account a left join customer c on  a.customer_id = c.customer_id where a.account_no = ?;`;
+const getAccountName = async (req, res) => {
+  const { receiver_acc_no } = req.body;
+  if (!receiver_acc_no) {
+    return res.json({
+      status: 500,
+      message: "receiver_acc_no cannot be empty",
+    });
+  } else {
+    const sql = `select c.name from account a left join customer c on  a.customer_id = c.customer_id where a.account_no = ?;`;
 
-      pool.query(sql, [receiver_acc_no], (err, result) => {
-        if (err) {
-                console.error("Error updating sender account balance:", err);
-                return res.json({
-                    status: 500,
-                    message: "Invalid Sender Account No",
-                });
-        }else{
-          return res.json({
-            status: 200,
-            data: result[0]["name"],
+    pool.query(sql, [receiver_acc_no], (err, result) => {
+      if (err) {
+        console.error("Error updating sender account balance:", err);
+        return res.json({
+          status: 500,
+          message: "Invalid Sender Account No",
         });
-        }
-      });
+      } else if (!result.length) {
+        return res.json({
+          status: 500,
+          message: "Invalid Sender Account No",
+        });
+      } else {
+        return res.json({
+          status: 200,
+          data: result[0]["name"],
+        });
+      }
+    });
+  }
+};
 
-
-
-
-    }
-}
-
-
-module.exports = { handleFundTransfer,getAccountName };
+module.exports = { handleFundTransfer, getAccountName };
