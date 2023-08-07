@@ -29,8 +29,12 @@ router.use("/transaction", transaction)
 //Admin
 const login = require("./admin/login")
 const logout = require("./admin/logout")
+const logs = require("./admin/logs")
+
 
 
 router.use("/admin/login", login)
 router.use("/admin/logout", logout)
+router.use("/admin/logs", logs)
+
 module.exports = router
