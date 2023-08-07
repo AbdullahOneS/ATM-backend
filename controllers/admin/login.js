@@ -45,11 +45,11 @@ const handleLogin = (req, res) => {
               });
             }
             // save token as cookie
-            // res.cookie("jwt", webToken, {
-            //   httpOnly: true,
-            //   sameSite: "None",
-            //   maxAge: 24 * 60 * 60 * 1000,
-            // }); //add {secure: true, } for chrome
+            res.cookie("jwt", webToken, {
+              httpOnly: true,
+              sameSite: "None",
+              maxAge: 24 * 60 * 60 * 1000,
+            }); //add {secure: true, } for chrome
             res.json({
               status: 200,
               message: "Successfully Logged in",

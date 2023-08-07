@@ -38,9 +38,31 @@ const getCardDetails = (req,res) =>{
     }
     
 }
+const changeCardStatus = async (req,res) =>{
+    try {
+        const { card_no, status } = req.body
+        if (!card_no || !status) {
+            return res.json( { status:200, message: "Please enter card no and status to be changed."})
+        }
+    const updateSql = `UPDATE card SET status=? WHERE card_no=?`;
+      const [updateResult] = await pool.promise().query(updateSql, [status, card_no]);
+
+      if (updateResult.affectedRows === 0) {
+        return res.json({ status: 404, message: "Card not found" });
+      } else {
+
+          return res.json({ status: 200, message: "Status of card changed to "+ status });
+      }
+        
+    } catch (err) {
+        console.error('Error processing the request:', err);
+        return res.json({ status: 200, error: 'An internal server error occurred' });
+    }
+    
+}
 
 
 
 module.exports = { 
-    getCardDetails
+    getCardDetails, changeCardStatus
 };
