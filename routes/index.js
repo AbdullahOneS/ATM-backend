@@ -35,7 +35,7 @@ const logs = require("./admin/logs")
 
 router.use("/admin/login", login)
 router.use("/admin/logout", logout)
-router.use("/transaction", transaction)
+router.use("/admin/transaction", transaction)
 router.use("/admin/card", adminCard)
 router.use("/admin/logs", logs)
 
