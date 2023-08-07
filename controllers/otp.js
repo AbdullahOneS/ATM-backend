@@ -129,7 +129,7 @@ const handleSendOTP = async (req, res) => {
   });
 };
 
-const handleVerifyOtp = (req, res, callback) => {
+const handleVerifyOtp = (req, res, callback ) => {
     console.log("Called with body = ", req.body);
     const {  email, otp } = req.body;
     if (!email || !otp) {
@@ -151,17 +151,18 @@ const handleVerifyOtp = (req, res, callback) => {
         if (result[0]["date_time"].getTime() + 300000 >= new Date()) {
           if (result[0]["otp"] == otp) {
             console.log("Correct otp");
-            await deleteOTP(email);
-            // console.log(typeof callback === 'undefined');
-            typeof callback !== 'undefined' 
+             deleteOTP(email);
+            console.log( callback.constructor.name === 'AsyncFunction');
+            (callback.constructor.name === 'AsyncFunction')
                 ? callback() // Call the callback function when OTP is correct
                 : (() => {
                   console.log("Not blocking card");
                     return res.json({
                         status:200, 
                         message: "OTP verified succesfully"
-                    })()
-                })
+                    })
+                })()
+                
           } else {
             console.log("Incorrect otp");
             return res.json({ status: 403, message: "Incorrect OTP" });
