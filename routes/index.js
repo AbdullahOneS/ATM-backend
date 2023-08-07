@@ -25,4 +25,12 @@ router.use("/transaction-quota", transactionQuota)
 router.use("/transaction", transaction)
 
 
+
+//Admin
+const login = require("./admin/login")
+const logout = require("./admin/logout")
+
+
+router.use("/admin/login", login)
+router.use("/admin/logout", logout)
 module.exports = router

@@ -3,7 +3,7 @@ const cors = require('cors')
 const express = require('express')
 const routes = require('./routes/index') 
 const bodyParser = require("body-parser")
-const bcrypt = require('bcrypt')
+const {encrypt} = require('./helper/encrypt')
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -21,10 +21,5 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
-
-//for test
-app.get('/',async (req, res) => {
-    res.send("Hello")
-})
 
 app.use('/', routes)
