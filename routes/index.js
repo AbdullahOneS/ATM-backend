@@ -30,6 +30,7 @@ const logout = require("./admin/logout")
 const transaction = require("./admin/transaction")
 const adminCard = require("./admin/card")
 const logs = require("./admin/logs")
+const atm = require("./admin/atm")
 
 
 
@@ -38,5 +39,7 @@ router.use("/admin/logout", logout)
 router.use("/admin/transaction", transaction)
 router.use("/admin/card", adminCard)
 router.use("/admin/logs", logs)
+router.use("/admin/atm", atm)
+
 
 module.exports = router
