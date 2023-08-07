@@ -111,7 +111,7 @@ async function handleFundTransfer(req, res, next) {
                       } else {
                         addLog(card_no, "Transfer Succcessful");
                         connection.release();
-                        req.balance = senderBalance + amount
+                        req.balance = parseFloat(senderBalance) + parseFloat(amount)
                         req.t_status = "success";
                         req.t_type = "Fund Transfer";
                         next();

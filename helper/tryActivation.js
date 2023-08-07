@@ -9,7 +9,7 @@ function tryActivation(card_no, res, name, type) {
     console.log("Select reuslt", result);
     if (err) {
       console.error("Error checking pin attempts:", err);
-      res.json({
+      return res.json({
         status: 401,
         message:
           "Your card is currently inactive, Please retry after 24 hours ",
@@ -22,7 +22,7 @@ function tryActivation(card_no, res, name, type) {
         console.log("deltelte");
         if (err) {
           console.error("Error deleting pin attempt:", err);
-          res.json({
+          return res.json({
             status: 401,
             message:
               "Your card is currently inactive, Please retry after 24 hours ",
@@ -35,14 +35,13 @@ function tryActivation(card_no, res, name, type) {
             console.log("Update reuslt", result);
             if (err) {
               console.error("Error updating card status:", err);
-              res.json({
+              return res.json({
                 status: 401,
                 message:
                   "Your card is currently inactive, Please retry after 24 hours ",
               });
-              return false;
             } else {
-              res.json({
+              return res.json({
                 status: 200,
                 message:
                   "Your card is Active ",
@@ -51,14 +50,12 @@ function tryActivation(card_no, res, name, type) {
                     'type': type
                   }
               });
-              console.log("True");
-              return true;
             }
           });
         }
       });
     } else {
-      res.json({
+      return res.json({
         status: 401,
         message:
           "Your card is currently inactive, Please retry after 24 hours ",
