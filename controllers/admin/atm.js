@@ -9,7 +9,7 @@ const getAtm = (req,res) =>{
         if (!result.length) {
           res.json({
             status: 401,
-            message: "Logs not found",
+            message: "Atm not found",
           });
         }else{
             
