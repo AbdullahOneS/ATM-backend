@@ -1,5 +1,5 @@
-const { pool } = require("../config/db");
-const { addLog } = require("../helper/log");
+const { pool } = require("../../config/db");
+const { addLog } = require("../../helper/log");
 
 const addTransaction = (req, res) => {
 

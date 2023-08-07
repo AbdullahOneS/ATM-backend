@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router();
 const { handleFundTransfer,getAccountName } = require("../controllers/fundTransfer");
-const { addTransaction } = require("../controllers/transaction");
+const { addTransaction } = require("../controllers/admin/transaction");
 const { handleAuthentication } = require("../middleware/authenticate");
 
 //Fund Transfer

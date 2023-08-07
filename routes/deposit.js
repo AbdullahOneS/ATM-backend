@@ -7,7 +7,7 @@ const {
 
 const { handleAuthentication } = require("../middleware/authenticate");
 
-const { addTransaction } = require("../controllers/transaction");
+const { addTransaction } = require("../controllers/admin/transaction");
 
 //request balance 
 router.post("/add",handleAuthentication ,addDeposit,addTransaction);
