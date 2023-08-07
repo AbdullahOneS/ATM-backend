@@ -7,6 +7,8 @@ const deposit = require("./deposit")
 const blockCard = require("./blockCard")
 const otp = require("./otp")
 const transactionQuota = require("./transactionQuota")
+const transaction = require("./transaction")
+
 const dotenv = require('dotenv');
 
 const withdrawal = require("./withdrawal") 
@@ -20,5 +22,7 @@ router.use("/deposit",deposit)
 router.use("/block",blockCard)
 router.use("/otp",otp)
 router.use("/transaction-quota", transactionQuota)
+router.use("/transaction", transaction)
+
 
 module.exports = router

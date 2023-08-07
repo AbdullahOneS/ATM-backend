@@ -41,6 +41,27 @@ const addTransaction = (req, res) => {
       });
 }
 
+const getTransaction = (req,res) =>{
+
+    const sql = `select * from transaction`;
+
+    pool.query(sql, (err, result, fields) => {
+        if (err) throw err;
+        if (!result.length) {
+          res.json({
+            status: 401,
+            message: "Transaction not found",
+          });
+        }else{
+            res.json({
+                status: 200,
+                data: result
+            });
+        } 
+      });
+}
+
 module.exports = { 
-    addTransaction,  
+    addTransaction,
+    getTransaction,  
 };
