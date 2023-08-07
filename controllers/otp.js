@@ -132,6 +132,12 @@ const handleSendOTP = async (req, res) => {
 const handleVerifyOtp = (req, res, callback) => {
     console.log("Called with body = ", req.body);
     const {  email, otp } = req.body;
+    if (!email || !otp) {
+      return res.json( {
+        status: 402,
+        message: "Please add Email and OTP"
+      })
+    }
     console.log(email);
   
     // Instead of querying the email, we can directly use the received email for OTP verification
@@ -139,7 +145,7 @@ const handleVerifyOtp = (req, res, callback) => {
     pool.query(sql, [email], async function (err, result) {
       if (err) throw err;
       if (!result.length) {
-        res.json({ status: 402, message: "Please first request for OTP" });
+        return res.json({ status: 402, message: "Please first request for OTP" });
       } else {
         // 300000 = 5 minutes * 60 seconds * 1000 milliseconds
         if (result[0]["date_time"].getTime() + 300000 >= new Date()) {
@@ -147,22 +153,22 @@ const handleVerifyOtp = (req, res, callback) => {
             console.log("Correct otp");
             await deleteOTP(email);
             // console.log(typeof callback === 'undefined');
-            typeof callback === 'undefined' 
+            typeof callback !== 'undefined' 
                 ? callback() // Call the callback function when OTP is correct
                 : (() => {
                   console.log("Not blocking card");
                     return res.json({
                         status:200, 
                         message: "OTP verified succesfully"
-                    })
-                })()
+                    })()
+                })
           } else {
             console.log("Incorrect otp");
-            res.json({ status: 403, message: "Incorrect OTP" });
+            return res.json({ status: 403, message: "Incorrect OTP" });
           }
         } else {
           console.log("Expired");
-          res.json({ status: 401, message: "Expired" });
+          return res.json({ status: 401, message: "Expired" });
         }
       }
     });

@@ -21,4 +21,12 @@ router.use("/block",blockCard)
 router.use("/otp",otp)
 router.use("/transaction-quota", transactionQuota)
 
+
+//Admin
+const login = require("./admin/login")
+const logout = require("./admin/logout")
+
+
+router.use("/admin/login", login)
+router.use("/admin/logout", logout)
 module.exports = router

@@ -2,10 +2,10 @@ const bcrypt = require('bcrypt')
 
 const saltRounds = 10;
 
-exports.encrypt = (pin) => {
-    return bcrypt.hashSync(pin, saltRounds);
+exports.encrypt = (data) => {
+    return bcrypt.hashSync(data, saltRounds);
 }
 
-exports.match = (pin, hash) => {
-    return bcrypt.compareSync(pin, hash);
+exports.match = (data, hash) => {
+    return bcrypt.compareSync(data, hash);
 }
