@@ -29,7 +29,7 @@ const handleLogin = (req, res) => {
 
         //if already present in webToken update refresh token else insert
         const query = result.length
-          ? `UPDATE web_token SET webToken=? WHERE uid=?;`
+          ? `UPDATE web_token SET web_token=? WHERE username=?;`
           : `insert into web_token values (?, ?);`;
         pool.query(
           query,
