@@ -62,7 +62,7 @@ const getTransaction = (req,res) =>{
                     t_type: val.transaction_type,
                     r_acc_no: val.receiver_acc_no,
                     t_status: val.transaction_status,
-                    amt: val.amt,
+                    amt: val.amount,
                     c_no: val.card_no,
                     atm_id:val.atm_id,
                   });
