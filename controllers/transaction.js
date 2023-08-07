@@ -53,9 +53,24 @@ const getTransaction = (req,res) =>{
             message: "Transaction not found",
           });
         }else{
+            var temp_data = []
+            result.forEach((val,index)=>{
+                temp_data.push( {
+                    key: index,
+                    t_id: val.transaction_id+"",
+                    date_time: val.date_time,
+                    t_type: val.transaction_type,
+                    r_acc_no: val.receiver_acc_no,
+                    t_status: val.transaction_status,
+                    amt: val.amt,
+                    c_no: val.card_no,
+                    atm_id:val.atm_id,
+                  });
+            })
+            
             res.json({
                 status: 200,
-                data: result
+                data:temp_data
             });
         } 
       });
