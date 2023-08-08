@@ -11,16 +11,6 @@ const verifyToken = (req, res, next) => {
   try {
     const token = token_header.split(" ")[1];
     console.log("TOken: ", token);
-    //if cookies
-    //   const cookies = req.cookies;
-    //   if (!cookies?.jwt)
-    //     return res
-    //       .status(401)
-    //       .json({ message: "please login to set refresh token as cookie" });
-    //   const refreshToken = cookies.jwt;
-    //   const refreshToken = req.body.refreshToken;
-    // console.log(refreshToken);
-    //check if refresh token is valid(in db)
     const sql = `Select * from web_token where web_token=?;`;
     pool.query(sql, [token], async (err, result) => {
       if (result.length) {

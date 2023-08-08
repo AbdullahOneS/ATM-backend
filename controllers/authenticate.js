@@ -26,9 +26,8 @@ const handleVerification = (req, res) => {
         message: "Invalid Card Number",
       });
     } else if (isNotExpired(result[0]["expiry_date"]+"")) {   //Check if Card did not exceed the expiry date
-        if (result[0]["status"] == "active") {    // Card is active User can perform trnasactions
+        if (result[0]["status"] === "active") {    // Card is active User can perform trnasactions
           //to add the logs
-          var now = new Date().toISOString();
 
           addLog(card_no, "Card Verified successfully");
 
@@ -42,13 +41,13 @@ const handleVerification = (req, res) => {
                 }
             });
             
-        } else if (result[0]["status"] == "inactive"){   // Card is Inactive, Exceeded 3 attmepts
+        } else if (result[0]["status"] === "inactive"){   // Card is Inactive, Exceeded 3 attmepts
           tryActivation(card_no, res, result[0]['name'], result[0]['account_type']);
           addLog(card_no,"Card Verification Failed");
-            res.json({
-                status: 401,
-                message: "You exceeded 3 PIN attempts, Please retry after 24 hours ", 
-            });
+            // res.json({
+            //     status: 401,
+            //     message: "You exceeded 3 PIN attempts, Please retry after 24 hours ", 
+            // });
         } else {        // Card(Status) is blocked i.e. Card is reported as stolen
             addLog(card_no,"Card Verification Failed");
             res.json({
