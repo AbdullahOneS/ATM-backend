@@ -21,3 +21,5 @@ Discussion:
 Our APIs are fully exposed
 like verification is done seperately so withdrawal, account_transfer, check_balnace will work even if card is inactive and blocked
 withdrawal, fund transfer validation limits are handled at the frontend only so if someone adds more than limit withdrwal from API no checks are maintained.
+
+denomincations (n_100...), atm_id, branch_name, location

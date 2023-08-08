@@ -148,15 +148,15 @@ const getAccountName = async (req, res) => {
 
     pool.query(sql, [receiver_acc_no], (err, result) => {
       if (err) {
-        console.error("Error updating sender account balance:", err);
+        console.error("Error getting reciever account name", err);
         return res.json({
           status: 500,
-          message: "Invalid Sender Account No",
+          message: "Invalid Reciever Account No",
         });
       } else if (!result.length) {
         return res.json({
           status: 500,
-          message: "Invalid Sender Account No",
+          message: "No such Account No exists",
         });
       } else {
         return res.json({

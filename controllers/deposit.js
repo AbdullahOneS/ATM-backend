@@ -82,7 +82,6 @@ const addDeposit = (req, res, next) => {
                             card_no,
                             `₹${amount} Deposited Successfully`
                           );
-    
                           req.t_status = "success";
                           req.t_type = "deposit";
                           next();

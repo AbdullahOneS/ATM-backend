@@ -8,10 +8,10 @@ const addTransaction = (req, res) => {
     const t_type = req.t_type;
 
 
-    const sql = `insert into transaction(transaction_type,receiver_acc_no,transaction_status,amount,card_no,atm_id)
-                values(?,?,?,?,?,?)`;
+    const sql = `insert into transaction(transaction_type,receiver_acc_no,amount,card_no,atm_id)
+                values(?,?,?,?,?)`;
 
-    pool.query(sql, [t_type,r_account_no,t_status,amount,card_no,atm_id], (err, result, fields) => {
+    pool.query(sql, [t_type,r_account_no,amount,card_no,atm_id], (err, result, fields) => {
         if (err) throw err;
         if (!result) {
             addLog(card_no,"Transaction Failed");
@@ -61,7 +61,6 @@ const getTransaction = (req,res) =>{
                     date_time: val.date_time,
                     t_type: val.transaction_type,
                     r_acc_no: val.receiver_acc_no,
-                    t_status: val.transaction_status,
                     amt: val.amount,
                     c_no: val.card_no,
                     atm_id:val.atm_id,

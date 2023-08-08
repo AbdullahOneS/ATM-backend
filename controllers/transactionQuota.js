@@ -9,7 +9,7 @@ const handleCheckTransactionQuota = async (req, res) => {
       // Check the total transaction amount for withdrawals and transfers
       const sql = `SELECT SUM(amount) as total_amount
       FROM transaction
-      WHERE card_no =? AND transaction_type IN ('withdrawal', 'fund transfer') AND date(date_time) = current_date();`;
+      WHERE card_no =? AND transaction_type = 'withdrawal' AND date(date_time) = current_date();`;
       const [result] = await pool.promise().query(sql, [card_no]);
   
       // Calculate the remaining combined quota for the day
