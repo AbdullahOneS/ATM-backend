@@ -15,8 +15,16 @@ const verifyToken = (req, res, next) => {
     pool.query(sql, [token], async (err, result) => {
       if (result.length) {
         // evaluate jwt
-        jwt.verify(token, process.env.WEB_TOKEN_SECRET);
-        next()
+          jwt.verify(token, process.env.WEB_TOKEN_SECRET,(err)=>{
+            if(err){
+              if(err.name === "TokenExpiredError")
+                return res.json({ status: 405, message: "Expired Token" });
+            }
+
+            if(!err)
+              next()
+          });
+          
       } else {
         console.log("No user with the above token");
         return res.json({ status: 401, message: "Invalid Token" });
