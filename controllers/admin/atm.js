@@ -2,7 +2,7 @@ const { pool } = require("../../config/db");
 
 const getAtm = (req,res) =>{
 
-    const sql = `select * from atm_machine where atm_id=1`;
+    const sql = `select * from atm_machine`;
 
     pool.query(sql, (err, result, fields) => {
         if (err) throw err;
