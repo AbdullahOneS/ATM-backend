@@ -5,7 +5,7 @@ const { handleAuthentication } = require("../middleware/authenticate");
 const { addTransaction } = require("../controllers/admin/transaction");
 const { verifyToken } = require('../middleware/verifyToken')
 //Withdrawal
-router.post("/", verifyToken, handleAuthentication, handleWithdrawal, addTransaction);
+router.post("/",  handleAuthentication, handleWithdrawal, addTransaction);
 // router.post("/", handleAuthentication, handleWithdrawal, addTransaction);
 
 router.post("/denomination", getDenomination);
